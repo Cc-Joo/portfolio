@@ -229,15 +229,6 @@
             .card-title { font-size: 1.5rem; }
         }
 
-        /* --- AI 匹配助手区 --- */
-        .ai-section { padding: 3rem; margin-top: 4rem; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); border-radius: 24px; }
-        .ai-textarea { width: 100%; height: 120px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; color: #fff; font-family: inherit; font-size: 1rem; resize: vertical; margin-bottom: 1.5rem; transition: all 0.3s ease; }
-        .ai-textarea:focus { outline: none; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); box-shadow: 0 0 20px rgba(255,255,255,0.05); }
-        .ai-btn { background: linear-gradient(135deg, #4f4f4f 0%, #1a1a1a 100%); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 1rem 2.5rem; border-radius: 99px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; }
-        .ai-btn:hover { background: linear-gradient(135deg, #666 0%, #333 100%); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .ai-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .ai-result { margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed rgba(255,255,255,0.1); min-height: 20px; transition: opacity 0.3s ease; display: none; }
-
         /* --- 模态框 (Modal) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -285,7 +276,6 @@
             <a href="#journey">探索之旅</a>
             <a href="#portfolio">项目作品</a>
             <a href="#more">更多的我</a>
-            <a href="#ai-matcher">✨ AI 匹配</a>
         </nav>
     </header>
 
@@ -467,7 +457,7 @@
                     
                     <div style="margin-top: 1.5rem;">
                         <span style="color: #fff; font-weight: 500;">🌍 旅行足迹 (20个城市)：</span>
-                        <p style="color: rgba(255,255,255,0.5); font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.8;">香港, 澳门, 巴黎, 巴塞罗那, 佛罗伦萨, 罗马, 布达佩斯, 维也纳, 阿姆斯特丹, 里斯本, 新疆, 新加坡, 乌镇, 南京, 深圳, 昆明, 大理, 南宁, 桂林, 泉州</p>
+                        <p style="color: rgba(255,255,255,0.5); font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.8;">香港, 澳门, 巴黎, 巴塞罗那, 佛罗伦萨, 罗马, 布达佩斯, 维也纳, 阿姆斯特丹, 里斯本, 新疆, 新加坡, 乌镇,南京, 深圳, 昆明, 大理, 南宁, 桂林, 泉州</p>
                     </div>
 
                     <!-- 替换为你提供的旅行风景图 -->
@@ -617,23 +607,10 @@
         </div>
     </section>
 
-    <!-- AI 匹配助手 -->
-    <section class="container reveal" id="ai-matcher">
-        <div class="liquid-glass pill badge">AI Matcher</div>
-        <h2 class="section-title font-heading">聊聊匹配度</h2>
-        <div class="ai-section liquid-glass" style="margin-top: 0;">
-            <h3 class="font-heading" style="font-size: 2.2rem; margin-bottom: 1rem;">✨ 我是你们团队在找的人吗？</h3>
-            <p style="margin-bottom: 2rem;">粘贴您的 <b>职位描述 (JD)</b>，让 AI 结合我的完整经历（包括UX设计、心理学疗愈、AI产品独立全栈落地），立刻给您一份客观的匹配度分析报告。</p>
-            
-            <textarea id="jd-input" class="ai-textarea" placeholder="在这里粘贴您的职位要求 (Job Description)..."></textarea>
-            
-            <div style="text-align: right;">
-                <button id="ai-analyze-btn" class="ai-btn" onclick="analyzeMatch()">✨ 开始分析匹配度</button>
-            </div>
-
-            <div id="ai-result" class="ai-result"></div>
-        </div>
-    </section>
+    <!-- 底部留白 / Footer -->
+    <footer style="padding: 2rem 0 6rem; text-align: center; color: rgba(255, 255, 255, 0.3); font-size: 0.85rem; letter-spacing: 0.05em; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <p>© 2026 Chenyi. All Rights Reserved.</p>
+    </footer>
 
     <!-- 全屏作品集模态框 -->
     <div class="modal-overlay" id="projectModal">
@@ -744,85 +721,6 @@
                 });
             });
         });
-
-        // --- Gemini API 集成：AI 匹配助手逻辑 ---
-        async function fetchWithRetry(url, options, maxRetries = 5) {
-            let delay = 1000;
-            for (let i = 0; i < maxRetries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return await response.json();
-                } catch (error) {
-                    if (i === maxRetries - 1) throw error;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay *= 2;
-                }
-            }
-        }
-
-        async function analyzeMatch() {
-            const jdText = document.getElementById('jd-input').value.trim();
-            const resultDiv = document.getElementById('ai-result');
-            const btn = document.getElementById('ai-analyze-btn');
-            
-            resultDiv.style.display = 'block';
-
-            if (!jdText) {
-                resultDiv.innerHTML = '<p style="color: #ffaa00;">请先输入或粘贴职位描述 (JD) 哦！</p>';
-                resultDiv.style.opacity = 1;
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = '✨ 正在分析，请稍候...';
-            resultDiv.style.opacity = 0.5;
-            resultDiv.innerHTML = '<p>AI 正在阅读您的 JD，并与我的完整跨界经历进行深度对比...</p>';
-            
-            let resumeContext = "【UX核心设计经历】:\n";
-            // 修改：限定只抓取 #experience 模块下的卡片，并增加可选链操作符防空指针报错
-            document.querySelectorAll('#experience .timeline-item').forEach(item => {
-                const company = item.querySelector('.company')?.innerText || '';
-                const role = item.querySelector('.role')?.innerText || '';
-                const details = item.querySelector('.original-text')?.innerText || '';
-                resumeContext += `公司:${company}, 职位:${role}\n工作细节:${details}\n---\n`;
-            });
-
-            resumeContext += `\n【跨界探索与产品落地能力 (极重要)】:\n`;
-            resumeContext += `1. 专业疗愈与心理学背景：学习了多种课程与中国传统文化，系统涉猎心理咨询与创造性艺术治疗，高分通过助理心理咨询师考试。\n`;
-            resumeContext += `2. AI产品全栈独立落地：运用AI技术，独立打造艺术疗愈小程序“EmoPiggy”。一个人完成从需求洞察、UX/UI设计到全栈代码开发上线闭环。\n`;
-
-            const apiKey = ""; 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const systemPrompt = "你是一个专业的 HR 招聘助手，同时也是高度认可候选人 Chenyi 的伯乐。你的任务是分析用户提供的职位描述 (JD) 与 Chenyi 简历经历的匹配程度。请以热情、专业、自信的语气，直接告诉用户为什么 Chenyi 是这个岗位的绝佳人选。提炼出 2-3 个核心匹配点。语言精炼且富有感染力，总字数严格控制在 200 字以内。输出格式必须为带适当表情符号的中文文本。";
-            const userQuery = `Chenyi的过往经历:\n${resumeContext}\n\n用户提供的职位描述(JD):\n${jdText}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] }
-            };
-
-            try {
-                const data = await fetchWithRetry(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (text) {
-                    resultDiv.innerHTML = `<h4 style="margin-bottom: 1rem; color: #fff; font-size: 1.2rem;">✨ AI 分析结果：</h4><p style="color: rgba(255,255,255,0.95); line-height: 1.8;">${text.replace(/\n/g, '<br>')}</p>`;
-                } else {
-                    resultDiv.innerHTML = '<p style="color: #ffaa00;">抱歉，AI 暂时开小差了，请稍后再试。</p>';
-                }
-            } catch (error) {
-                console.error(error);
-                resultDiv.innerHTML = '<p style="color: #ffaa00;">网络连接似乎有些问题，请稍后再试。</p>';
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '✨ 重新分析匹配度';
-                resultDiv.style.opacity = 1;
-            }
-        }
     </script>
 </body>
 </html>
