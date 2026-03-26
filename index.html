@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chenyi's Portfolio | 技术与疗愈</title>
+    <style>
+        /* --- 基础重置与变量 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #000000;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .font-heading { font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 700; letter-spacing: -0.02em; }
+        .font-body { font-weight: 400; }
+        
+        /* --- 核心视觉组件：Liquid Glass (液态玻璃) --- */
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+
+        /* --- 导航栏 --- */
+        header { position: fixed; top: 2rem; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100; padding: 0 1rem; }
+        nav.pill {
+            display: flex; gap: 2rem; padding: 1rem 2.5rem; border-radius: 99px;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        nav.pill a { color: #fff; text-decoration: none; font-size: 0.95rem; font-weight: 500; opacity: 0.8; transition: opacity 0.2s; }
+        nav.pill a:hover { opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+        /* --- 布局容器 --- */
+        .container { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+        
+        .badge { display: inline-block; padding: 0.5rem 1.2rem; border-radius: 99px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
+        .section-title { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 3rem; }
+
+        /* --- 首屏 Hero --- */
+        .hero-section {
+            padding-block: 0;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.6) 70%, #000000 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .hero-bg-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.9;
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            pointer-events: none;
+        }
+        .hero-content {
+            padding-top: 10vh;
+            max-width: 800px;
+            z-index: 2;
+            position: relative;
+        }
+        @keyframes titleReveal {
+            0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        .hero-title {
+            font-size: clamp(4rem, 8vw, 7rem);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.5) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleReveal 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes blurTextIn {
+            0% { filter: blur(20px); opacity: 0; transform: translateY(40px); }
+            100% { filter: blur(0); opacity: 1; transform: translateY(0); }
+        }
+        .hero-subtext {
+            font-size: 1.15rem; 
+            max-width: 750px;
+            animation: blurTextIn 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards;
+            opacity: 0;
+            
+            /* 清水玻璃质感 */
+            background-color: rgba(0, 0, 0, 0.05); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 40px; 
+            padding: 3.5rem 4rem; 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+        }
+        .hero-subtext p { margin-bottom: 1.5rem; line-height: 1.8; }
+
+        /* --- 前序 (时间轴卡片) --- */
+        .timeline { display: flex; flex-direction: column; gap: 1.5rem; position: relative; padding-left: 2.5rem; }
+        .timeline::before {
+            content: ''; position: absolute; top: 2rem; bottom: 2rem; left: 0; width: 1px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.05) 100%);
+        }
+        .timeline-item {
+            padding: 2.5rem; transition: all 0.4s ease; position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -2.5rem; top: 3.5rem; width: 9px; height: 9px;
+            background: #fff; border-radius: 50%; transform: translateX(-4px);
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+        .timeline-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .meta-left { flex-shrink: 0; }
+        .time-meta { font-size: 0.9rem; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+        .role { font-size: 1.25rem; color: #fff; font-weight: 500; }
+        .company { font-size: 1.8rem; background: linear-gradient(90deg, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* 新增：公司Logo及右侧布局样式 */
+        .job-meta { display: flex; align-items: center; gap: 0.8rem; justify-content: flex-end; }
+        .company-logo { height: 32px; width: auto; object-fit: contain; border-radius: 4px; }
+        
+        .original-text p { color: rgba(255,255,255,0.7); margin-bottom: 0.8rem; font-size: 1rem; }
+        .original-text p.bold-title { color: #fff; font-weight: 500; margin-top: 1.5rem; }
+        .highlight-term { color: #ffffff; font-weight: 500; }
+
+        /* 经历卡片交互 */
+        .timeline-item.collapsible { cursor: pointer; }
+        .timeline-item.collapsible:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+        .timeline-item.collapsible.is-expanded {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .timeline-item.collapsible .timeline-header { margin-bottom: 0; transition: margin-bottom 0.4s ease; }
+        .timeline-item.collapsible:hover:not(.force-close) .timeline-header,
+        .timeline-item.collapsible.is-expanded .timeline-header { margin-bottom: 1.5rem; }
+        .timeline-item.collapsible .original-text { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .timeline-item.collapsible:hover:not(.force-close) .original-text,
+        .timeline-item.collapsible.is-expanded .original-text { max-height: 800px; opacity: 1; }
+
+        /* --- 更多的我 --- */
+        .more-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .more-card { 
+            padding: 2rem; text-decoration: none; color: inherit; 
+            transition: transform 0.3s ease, border-color 0.3s ease; 
+            display: flex; flex-direction: column; justify-content: flex-end;
+            position: relative; overflow: hidden; min-height: 280px;
+        }
+        .more-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.3); }
+        .more-card-bg {
+            position: absolute; inset: 0; 
+            background-size: cover; background-position: center; 
+            z-index: 0; transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            opacity: 0.7;
+        }
+        .more-card:hover .more-card-bg { transform: scale(1.08); opacity: 0.9; }
+        .more-card-overlay {
+            position: absolute; inset: 0;
+            /* 修改：加深底部的暗色渐变，让纯黑覆盖更多文字区域 */
+            background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.1) 80%, transparent 100%);
+            z-index: 1;
+        }
+        .more-card-content { position: relative; z-index: 2; }
+        .more-card-content h3 { font-size: 1.5rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .more-card-content p { color: rgba(255,255,255,0.85); font-size: 0.95rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+
+        /* --- 项目作品 --- */
+        .portfolio-card { 
+            padding: 2rem; 
+            transition: transform 0.3s ease, border-color 0.3s ease; 
+            display: flex;
+            gap: 2.5rem;
+            align-items: stretch; /* 修改：由 center 改为 stretch，让左右等高 */
+        }
+        .portfolio-card:hover { transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.3); }
+        .portfolio-card:hover .portfolio-image img { transform: scale(1.05); }
+        
+        .portfolio-image {
+            flex: 0 0 45%;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 16 / 10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .portfolio-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: block;
+        }
+        .portfolio-info {
+            flex: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 0.5rem 0; /* 新增上下微调内边距，使文字视觉上与图片圆角绝对齐平 */
+        }
+        .card-title { font-size: 2rem; margin-bottom: 0.5rem; }
+
+        /* 移动端响应式：屏幕较小时改为上图下文 */
+        @media (max-width: 768px) {
+            .portfolio-card { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
+            .portfolio-image { flex: none; width: 100%; }
+            .card-title { font-size: 1.5rem; }
+        }
+
+        /* --- AI 匹配助手区 --- */
+        .ai-section { padding: 3rem; margin-top: 4rem; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); border-radius: 24px; }
+        .ai-textarea { width: 100%; height: 120px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; color: #fff; font-family: inherit; font-size: 1rem; resize: vertical; margin-bottom: 1.5rem; transition: all 0.3s ease; }
+        .ai-textarea:focus { outline: none; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); box-shadow: 0 0 20px rgba(255,255,255,0.05); }
+        .ai-btn { background: linear-gradient(135deg, #4f4f4f 0%, #1a1a1a 100%); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 1rem 2.5rem; border-radius: 99px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; }
+        .ai-btn:hover { background: linear-gradient(135deg, #666 0%, #333 100%); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .ai-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .ai-result { margin-top: 2rem; padding-top: 2rem; border-top: 1px dashed rgba(255,255,255,0.1); min-height: 20px; transition: opacity 0.3s ease; display: none; }
+
+        /* --- 模态框 (Modal) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.4s ease; padding: 2rem;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content {
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            width: 100%; max-width: 1000px; max-height: 90vh;
+            border-radius: 24px; overflow-y: auto; position: relative;
+            transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            /* 对于设计图切片，内边距设为0确保边缘贴合 */
+            padding: 0; 
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.5rem; cursor: pointer; transition: all 0.3s ease; z-index: 10;
+        }
+        .close-btn:hover { background: rgba(255,255,255,0.1); transform: rotate(90deg); }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+        /* 动画执行类 */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <header>
+        <nav class="liquid-glass pill">
+            <a href="#experience">前序</a>
+            <a href="#journey">探索之旅</a>
+            <a href="#portfolio">项目作品</a>
+            <a href="#more">更多的我</a>
+            <a href="#ai-matcher">✨ AI 匹配</a>
+        </nav>
+    </header>
+
+    <!-- 首屏 -->
+    <section class="hero-section">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/bg.jpg?raw=true" class="hero-bg-image" alt="Hero Background">
+        <div class="hero-content container">
+            <h1 class="hero-title font-heading">Hi I'm Chenyi</h1>
+            <div class="hero-subtext">
+                <p style="font-size: 1.35rem; color: #ffffff; font-weight: 500; margin-bottom: 2rem; letter-spacing: 0.02em;">从“解决界面流程问题”到“关注人的内心”</p>
+                <p style="color: rgba(255, 255, 255, 0.65); font-weight: 300;">
+                    什么样的产品，能让人“更好”？<br>
+                    带着这个追问，我用三年时间完成了自己的“产品迭代”——<br>
+                    在旅行中理解自己与世界的关系；<br>
+                    在心理学学习中探索热情并建立专业框架；<br>
+                    用AI做项目验证“技术+疗愈”的可能性
+                </p>
+                <p style="color: #ffffff; font-weight: 500; margin-top: 2rem; letter-spacing: 0.02em;">我的愿景是打造帮助人健康成长的产品，让技术更有温度</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 个人名片 / 联系方式 -->
+    <section class="reveal" style="max-width: 1000px; margin: -4rem auto 0; padding: 0 2rem; position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <div style="width: 160px; height: 160px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 1.5rem;">
+            <img src="https://github.com/Cc-Joo/portfolio/blob/main/Self.jpeg?raw=true" alt="顾晨燚" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+        <h2 class="font-heading" style="font-size: 1.8rem; color: #fff; margin-bottom: 1rem; letter-spacing: 0.05em;">顾晨燚</h2>
+        <div class="liquid-glass" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; color: rgba(255, 255, 255, 0.85); font-size: 1.05rem; padding: 0.8rem 2.5rem; border-radius: 99px;">
+            <span>联系方式：15857134754</span>
+            <span>邮箱：guchenyilife@163.com</span>
+        </div>
+    </section>
+
+    <!-- 前序 -->
+    <section class="container reveal" id="experience">
+        <div class="liquid-glass pill badge">Experience</div>
+        <h2 class="section-title font-heading">前序</h2>
+        <p style="margin-bottom: 3rem;">4年互联网产品UX设计经验，覆盖C端产品与B端工具（公司内部工具），具备从0到1产品交互设计的能力，参与产品从需求分析、方案设计、研发协同、测试验收到上线的完整流程，擅长调研分析与数据驱动。</p>
+        
+        <div class="timeline">
+            <!-- 米哈游 -->
+            <div class="timeline-item liquid-glass reveal">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2021.4 - 2023.4</div>
+                        <div class="role font-body">UE设计师</div>
+                    </div>
+                    <div class="job-meta">
+                        <h3 class="company font-heading">上海米哈游影铁科技有限公司</h3>
+                        <img src="https://github.com/Cc-Joo/portfolio/blob/main/logo_1.png?raw=true" class="company-logo" alt="米哈游 Logo">
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p class="bold-title">1.社交与社区产品</p>
+                    <p>• 主导社区负面氛围治理项目「众裁」0-1交互设计：设计用户参与式裁决机制，提升用户归属感与治理透明度；</p>
+                    <p>• 主导探索型项目「大别野」0-1移动端和网页端交互设计：完成Avatar装扮系统及核心聊天模块流程设计，参与可用性测试优化后续方案；</p>
+                    <p>• 参与海外社区0-1搭建：注册登录、发布流程链路设计；</p>
+                    <p class="bold-title">2.工具与平台类产品</p>
+                    <p>• 主导游戏周边电商项目「米游铺」0-1交互设计；</p>
+                    <p>• 参与IM即时通讯工具0-1搭建，负责新建群聊、会话管理等需求设计；</p>
+                    <p class="bold-title">3.团队建设</p>
+                    <p>参与交互小组管理，协助团队建设(组件搭建、简历筛选、面试、校招生mentor)</p>
+                </div>
+            </div>
+
+            <!-- 携程 -->
+            <div class="timeline-item liquid-glass reveal collapsible">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2019.12 - 2021.3</div>
+                        <div class="role font-body">高级交互设计师</div>
+                    </div>
+                    <div class="job-meta">
+                        <h3 class="company font-heading">携程旅游信息技术(上海)有限公司</h3>
+                        <img src="https://github.com/Cc-Joo/portfolio/blob/main/logo_2.png?raw=true" class="company-logo" alt="携程 Logo">
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p class="bold-title">1. 携程APP的基础架构与工具型模块</p>
+                    <p>• 行程项目：优化创建旅行路线，采用可用性测试并迭代，使最终新版创建成功率提升91.8%；智能场景卡片改版，提供场景化服务，降低打扰度，使日均曝光点击率是旧版7倍以上；</p>
+                    <p>• 首页项目：负责特价爆款和周边游页面的改版设计，参与信息流组件搭建；</p>
+                    <p>• 注册登录项目：将手机验证作为主登录方式，分步引导，实现整体登录转化率提升>10%，登录态提升5%；</p>
+                    <p class="bold-title">2. 组件与B端项目</p>
+                    <p>• 整合设计C端的常用旅客组件规范，使得其他BU可统一接入；与团队共同建设B端设计规范；</p>
+                </div>
+            </div>
+
+            <!-- 尚器 -->
+            <div class="timeline-item liquid-glass reveal collapsible">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2019.05 - 2019.12</div>
+                        <div class="role font-body">UX/UI设计师</div>
+                    </div>
+                    <div class="job-meta">
+                        <h3 class="company font-heading">上海尚器设计创意有限公司</h3>
+                        <img src="https://github.com/Cc-Joo/portfolio/blob/main/logo_3.png?raw=true" class="company-logo" alt="尚器 Logo">
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p>1.汇丰项目：组织用户可用性测试(用户访谈、A/B testing)，辅助设计app端开户流程UX UI，重新制定2.0版组件规范，和制定改版策略；</p>
+                    <p>2.麦当劳项目：参与会员日活动UI设计和UX调整，签到抽奖活动UX设计，相关活动设计走查；</p>
+                </div>
+            </div>
+
+            <!-- Day One -->
+            <div class="timeline-item liquid-glass reveal collapsible">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2018.09 - 2019.01</div>
+                        <div class="role font-body">Information designer</div>
+                    </div>
+                    <div class="job-meta">
+                        <h3 class="company font-heading">Day One Technologies Limited</h3>
+                        <img src="https://github.com/Cc-Joo/portfolio/blob/main/logo_4.png?raw=true" class="company-logo" alt="Day One Logo">
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p>于英国一家提供在线教育解决方案的公司全职工作，参与在线互动课程的全流程设计与开发，包括课件脚本的文案、插画制作，课件内容包括学习、测试和游戏；并用Storyline搭建互动课程，以及进行相关测试，进行迭代设计</p>
+                </div>
+            </div>
+
+            <!-- University -->
+            <div class="timeline-item liquid-glass reveal collapsible">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2017.09 - 2018.11</div>
+                        <div class="role font-body">Digital and Interactive Design</div>
+                    </div>
+                    <div class="job-meta">
+                        <h3 class="company font-heading">University of Leeds (QS86)</h3>
+                        <img src="https://github.com/Cc-Joo/portfolio/blob/main/logo_5.png?raw=true" class="company-logo" alt="Leeds Logo">
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p>获得UL scholarship scheme校级奖学金。毕业设计项目与导师联合发表在《Information Design Journal》。期间在世界500强British Sky Broadcasting Limited英国天空广播公司进行短期实习， 参与设计app新功能开发和用户测试</p>
+                </div>
+            </div>
+
+            <!-- 浙江理工大学 -->
+            <div class="timeline-item liquid-glass reveal collapsible">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2013.09 - 2017.06</div>
+                        <div class="role font-body">纺织工程（纺织品设计方向）</div>
+                    </div>
+                    <div class="job-meta">
+                        <h3 class="company font-heading">浙江理工大学</h3>
+                        <img src="https://github.com/Cc-Joo/portfolio/blob/main/logo_6.png?raw=true" class="company-logo" alt="浙江理工大学 Logo">
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p>多次获校级奖学金，期间交换至台湾辅仁大学一学期，GPA: 4.06/5</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 探索之旅 (现已移动至项目作品上方) -->
+    <section class="container reveal" id="journey">
+        <div class="liquid-glass pill badge">Journey</div>
+        <h2 class="section-title font-heading">探索之旅</h2>
+        
+        <!-- 移除了之前临时的 style="padding-left: 0;"，恢复完整时间轴样式 -->
+        <div class="timeline">
+            
+            <!-- 第一年：转折 -->
+            <div class="timeline-item liquid-glass reveal">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2023 Gap期 第一年</div>
+                        <div class="role font-body">转折：探索与触动</div>
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p>职业瓶颈期，我借由播客去采访和记录周围人“不一样的人生经历”，通过独自旅行重新审视自我。在旅行中，我近距离地感受到了世界的广阔，内心恐惧与热爱的拉扯，还有生命的无常——在我旅行到新加坡见好友时，她竟突然确诊了癌症。</p>
+                    <p>这让我开始思考：我是谁，在短暂的人生中真正想做的事情是什么，我能做什么给世界带来更本质的价值？这为我转向身心健康领域埋下了种子。</p>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <span style="color: #fff; font-weight: 500;">🌍 旅行足迹 (20个城市)：</span>
+                        <p style="color: rgba(255,255,255,0.5); font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.8;">香港, 澳门, 巴黎, 巴塞罗那, 佛罗伦萨, 罗马, 布达佩斯, 维也纳, 阿姆斯特丹, 里斯本, 新疆, 新加坡, 乌镇, 南京, 深圳, 昆明, 大理, 南宁, 桂林, 泉州</p>
+                    </div>
+
+                    <!-- 替换为你提供的旅行风景图 -->
+                    <div style="margin-top: 1.5rem; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                        <img src="https://github.com/Cc-Joo/portfolio/blob/main/sing.jpg?raw=true" alt="旅行风景记忆" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: opacity 0.3s ease;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.9">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二年：探索 -->
+            <div class="timeline-item liquid-glass reveal">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2024 Gap期 第二年</div>
+                        <div class="role font-body">探索：广泛学习与兴趣确认</div>
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p>在国外旅行后我意识到自己对中国传统文化的了解甚少，开始接触香道、古琴、奇门遁甲、国画，通过文化基因感受自己的根基。</p>
+                    <p>同时也开始学习艺术疗愈、音声疗愈这类创造性艺术治疗（Creative arts therapy）的课程，自我体验各类疗愈活动，包括心理咨询、沙盘、舞动、音乐和绘画疗愈。</p>
+                    <p>这个过程不仅是“活在当下”，更是我在有意识地探索各种“与人内心互动”的方式。我最终确认，自己对心理学与疗愈有着最深的热情和天赋。</p>
+                    
+                    <!-- 替换为你的 5 张真实疗愈探索图片 -->
+                    <div style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                        <div style="border-radius: 12px; overflow: hidden; height: 140px; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="https://github.com/Cc-Joo/portfolio/blob/main/experience_1.JPG?raw=true" alt="疗愈探索 1" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <div style="border-radius: 12px; overflow: hidden; height: 140px; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="https://github.com/Cc-Joo/portfolio/blob/main/experience_2.jpg?raw=true" alt="疗愈探索 2" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <div style="border-radius: 12px; overflow: hidden; height: 140px; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="https://github.com/Cc-Joo/portfolio/blob/main/experience_3.jpeg?raw=true" alt="疗愈探索 3" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <div style="border-radius: 12px; overflow: hidden; height: 140px; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="https://github.com/Cc-Joo/portfolio/blob/main/experience_4.jpeg?raw=true" alt="疗愈探索 4" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <div style="border-radius: 12px; overflow: hidden; height: 140px; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="https://github.com/Cc-Joo/portfolio/blob/main/experience_5.jpeg?raw=true" alt="疗愈探索 5" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第三年：聚焦 -->
+            <div class="timeline-item liquid-glass reveal">
+                <div class="timeline-header">
+                    <div class="meta-left">
+                        <div class="time-meta">2025 Gap期 第三年</div>
+                        <div class="role font-body">聚焦：专业学习与项目实践</div>
+                    </div>
+                </div>
+                <div class="original-text">
+                    <p>我决定将兴趣专业化，花了近一年系统学习了心理学课程，课程内容包括普通心理学、发展心理学、社会心理学、人格心理学、心理测量与心理评估、异常心理学、精神分析治疗、认知行为治疗等理论课程，还有会谈技术、心理咨询见习等实践课程。并在今年2月1号参加中国心理学会的助理心理咨询师考试，以高分通过了考核：</p>
+                    
+                    <!-- 成绩高分展示牌 -->
+                    <div style="margin: 1.5rem 0; padding: 1.5rem 2rem; background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); display: flex; gap: 3rem; flex-wrap: wrap; width: fit-content;">
+                        <div>
+                            <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.3rem;">心理学综合</div>
+                            <div><span style="color: #fff; font-size: 2rem; font-weight: bold; font-family: 'SF Pro Display', sans-serif;">95.6</span><span style="font-size: 1rem; color: rgba(255,255,255,0.4);"> /100</span></div>
+                        </div>
+                        <div>
+                            <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 0.3rem;">咨询实务</div>
+                            <div><span style="color: #fff; font-size: 2rem; font-weight: bold; font-family: 'SF Pro Display', sans-serif;">92.8</span><span style="font-size: 1rem; color: rgba(255,255,255,0.4);"> /100</span></div>
+                        </div>
+                    </div>
+
+                    <p>同时，我敏锐地意识到 AI 是放大心理学价值的工具，于是主动学习并利用 AI，独立开发了一款艺术疗愈概念小程序 <strong>EmoPiggy</strong>。</p>
+                    
+                    <!-- 强有力的结尾呼吁 -->
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <p style="color: #fff; font-weight: 500; font-size: 1.1rem; line-height: 1.6;">
+                            ✨ 现在，带着对心理学的专业理解、对AI技术的初步实践、以及过往扎实的产品设计能力，我希望加入一个志同道合的团队，共同打造真正能帮助人们内心成长的AI产品。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 项目作品 (包含 EmoPiggy) -->
+    <section class="container reveal" id="portfolio">
+        <div class="liquid-glass pill badge">Portfolio</div>
+        <h2 class="section-title font-heading">项目作品</h2>
+        
+        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+            <!-- EmoPiggy 项目卡片 (左图右文) -->
+            <div class="portfolio-card liquid-glass reveal" style="cursor: pointer;" onclick="window.open('emopiggy.html', '_blank')">
+                <div class="portfolio-image">
+                    <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_0.jpg?raw=true" alt="EmoPiggy 封面">
+                </div>
+                <div class="portfolio-info">
+                    <h3 class="card-title font-heading">EmoPiggy 艺术疗愈小程序</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="font-size: 0.85rem; padding: 0.2rem 0.8rem; border-radius: 99px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); white-space: nowrap;">2025年个人项目</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">全栈独立开发 / 产品设计 / UX & UI / 疗愈心理学应用</p>
+                    <p>一款AI coding的艺术疗愈小程序——用艺术记录情绪，由我独立完成从产品需求分析、交互视觉设计到前后端代码开发与最终上线的全链路流程。</p>
+                    <div style="margin-top: auto; padding-top: 1.5rem; color: #fff; font-weight: 500;">✨ 点击查看 &rarr;</div>
+                </div>
+            </div>
+
+            <!-- Groupchat 项目卡片 (左图右文) -->
+            <div class="portfolio-card liquid-glass reveal" style="cursor: pointer;" onclick="window.open('groupchat.html', '_blank')">
+                <div class="portfolio-image">
+                    <img src="https://github.com/Cc-Joo/portfolio/blob/main/Groupchat_0.png?raw=true" alt="Groupchat 封面">
+                </div>
+                <div class="portfolio-info">
+                    <h3 class="card-title font-heading">大别野（IM群聊+Avatar）</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <span style="font-size: 0.85rem; padding: 0.2rem 0.8rem; border-radius: 99px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); white-space: nowrap;">2023年米哈游公司项目</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">交互设计 / 社交互动 / Avatar</p>
+                    <p>对于社区新模式的尝试，结合类discord式的三层群聊结构与Avatar互动，涉及移动端和网页端。</p>
+                    <div style="margin-top: auto; padding-top: 1.5rem; color: #fff; font-weight: 500;">✨ 点击查看 &rarr;</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 更多的我 -->
+    <section class="container reveal" id="more">
+        <div class="liquid-glass pill badge">More about me</div>
+        <h2 class="section-title font-heading">更多的我</h2>
+        <div class="more-grid">
+            <!-- 播客卡片 -->
+            <a href="https://www.xiaoyuzhoufm.com/podcast/62920def3f73192055d63e30" target="_blank" class="more-card liquid-glass reveal">
+                <div class="more-card-bg" style="background-image: url('https://github.com/Cc-Joo/portfolio/blob/main/podcast.jpeg?raw=true');"></div>
+                <div class="more-card-overlay"></div>
+                <div class="more-card-content">
+                    <h3 class="font-heading">《火山喷发时》</h3>
+                    <p style="color: #fff; margin-bottom: 1rem; font-weight: 500;">播客主理人</p>
+                    <p>每个人都有属于自己可爱迷人的闪光点，每个人的成长故事都值得被记录</p>
+                </div>
+            </a>
+            
+            <!-- 疗愈实践卡片 -->
+            <div class="more-card liquid-glass reveal" style="cursor: pointer;" onclick="showHealingPractice()">
+                <div class="more-card-bg" style="background-image: url('https://github.com/Cc-Joo/portfolio/blob/main/long_2.jpeg?raw=true');"></div>
+                <div class="more-card-overlay"></div>
+                <div class="more-card-content">
+                    <h3 class="font-heading">身心探索实践</h3>
+                    <p style="color: #fff; margin-bottom: 1rem; font-weight: 500;">疗愈师</p>
+                    <p>记录组织和带领疗愈活动的精彩瞬间，包括龙美术馆的音声疗愈会，艺术疗愈课堂助教，草坪疗愈会</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI 匹配助手 -->
+    <section class="container reveal" id="ai-matcher">
+        <div class="liquid-glass pill badge">AI Matcher</div>
+        <h2 class="section-title font-heading">聊聊匹配度</h2>
+        <div class="ai-section liquid-glass" style="margin-top: 0;">
+            <h3 class="font-heading" style="font-size: 2.2rem; margin-bottom: 1rem;">✨ 我是你们团队在找的人吗？</h3>
+            <p style="margin-bottom: 2rem;">粘贴您的 <b>职位描述 (JD)</b>，让 AI 结合我的完整经历（包括UX设计、心理学疗愈、AI产品独立全栈落地），立刻给您一份客观的匹配度分析报告。</p>
+            
+            <textarea id="jd-input" class="ai-textarea" placeholder="在这里粘贴您的职位要求 (Job Description)..."></textarea>
+            
+            <div style="text-align: right;">
+                <button id="ai-analyze-btn" class="ai-btn" onclick="analyzeMatch()">✨ 开始分析匹配度</button>
+            </div>
+
+            <div id="ai-result" class="ai-result"></div>
+        </div>
+    </section>
+
+    <!-- 全屏作品集模态框 -->
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 模态框逻辑 ---
+        function openModal(content) {
+            const modal = document.getElementById('projectModal');
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = content;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('projectModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => { document.getElementById('modalContent').innerHTML = ''; }, 400);
+        }
+
+        // 点击模态框背景关闭
+        document.getElementById('projectModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // --- 疗愈实践照片展示逻辑 ---
+        function showHealingPractice() {
+            // 辅助函数：生成带悬浮放大效果的图片外框
+            const createImg = (url) => `
+                <div style="border-radius: 12px; overflow: hidden; height: 200px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <img src="${url}" alt="疗愈活动记录" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: default;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                </div>
+            `;
+
+            const content = `
+                <div style="padding: 3rem 2.5rem; color: #fff; text-align: left;">
+                    <h2 class="font-heading" style="text-align: center; font-size: 2.2rem; margin-bottom: 3rem; letter-spacing: 0.05em;">疗愈实践记录</h2>
+                    
+                    <!-- 活动 1 -->
+                    <div style="margin-bottom: 4rem;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #fff; font-weight: 500;">龙美术馆音声疗愈会</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/long_1.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/long_2.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/long_3.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/long_4.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/long_5.jpeg?raw=true')}
+                        </div>
+                    </div>
+
+                    <!-- 活动 2 -->
+                    <div style="margin-bottom: 4rem;">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #fff; font-weight: 500;">艺术疗愈课程助教</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/arthealing_1.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/arthealing_2.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/arthealing_3.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/arthealing_4.jpeg?raw=true')}
+                        </div>
+                    </div>
+
+                    <!-- 活动 3 -->
+                    <div>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #fff; font-weight: 500;">草坪疗愈会</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/soundhealing_1.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/soundhealing_2.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/soundhealing_3.jpeg?raw=true')}
+                            ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/soundhealing_4.jpeg?raw=true')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            openModal(content);
+        }
+
+        // --- 页面初始化脚本 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 滚动出现动画 (Intersection Observer)
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach((el) => { observer.observe(el); });
+
+            // 2. 履历卡片点击锁定/解锁逻辑
+            document.querySelectorAll('.timeline-item.collapsible').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (this.classList.contains('is-expanded')) {
+                        this.classList.remove('is-expanded');
+                        this.classList.add('force-close'); 
+                    } else {
+                        this.classList.add('is-expanded');
+                        this.classList.remove('force-close');
+                    }
+                });
+                item.addEventListener('mouseleave', function() {
+                    this.classList.remove('force-close');
+                });
+            });
+        });
+
+        // --- Gemini API 集成：AI 匹配助手逻辑 ---
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function analyzeMatch() {
+            const jdText = document.getElementById('jd-input').value.trim();
+            const resultDiv = document.getElementById('ai-result');
+            const btn = document.getElementById('ai-analyze-btn');
+            
+            resultDiv.style.display = 'block';
+
+            if (!jdText) {
+                resultDiv.innerHTML = '<p style="color: #ffaa00;">请先输入或粘贴职位描述 (JD) 哦！</p>';
+                resultDiv.style.opacity = 1;
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '✨ 正在分析，请稍候...';
+            resultDiv.style.opacity = 0.5;
+            resultDiv.innerHTML = '<p>AI 正在阅读您的 JD，并与我的完整跨界经历进行深度对比...</p>';
+            
+            let resumeContext = "【UX核心设计经历】:\n";
+            // 修改：限定只抓取 #experience 模块下的卡片，并增加可选链操作符防空指针报错
+            document.querySelectorAll('#experience .timeline-item').forEach(item => {
+                const company = item.querySelector('.company')?.innerText || '';
+                const role = item.querySelector('.role')?.innerText || '';
+                const details = item.querySelector('.original-text')?.innerText || '';
+                resumeContext += `公司:${company}, 职位:${role}\n工作细节:${details}\n---\n`;
+            });
+
+            resumeContext += `\n【跨界探索与产品落地能力 (极重要)】:\n`;
+            resumeContext += `1. 专业疗愈与心理学背景：学习了多种课程与中国传统文化，系统涉猎心理咨询与创造性艺术治疗，高分通过助理心理咨询师考试。\n`;
+            resumeContext += `2. AI产品全栈独立落地：运用AI技术，独立打造艺术疗愈小程序“EmoPiggy”。一个人完成从需求洞察、UX/UI设计到全栈代码开发上线闭环。\n`;
+
+            const apiKey = ""; 
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const systemPrompt = "你是一个专业的 HR 招聘助手，同时也是高度认可候选人 Chenyi 的伯乐。你的任务是分析用户提供的职位描述 (JD) 与 Chenyi 简历经历的匹配程度。请以热情、专业、自信的语气，直接告诉用户为什么 Chenyi 是这个岗位的绝佳人选。提炼出 2-3 个核心匹配点。语言精炼且富有感染力，总字数严格控制在 200 字以内。输出格式必须为带适当表情符号的中文文本。";
+            const userQuery = `Chenyi的过往经历:\n${resumeContext}\n\n用户提供的职位描述(JD):\n${jdText}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const data = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    resultDiv.innerHTML = `<h4 style="margin-bottom: 1rem; color: #fff; font-size: 1.2rem;">✨ AI 分析结果：</h4><p style="color: rgba(255,255,255,0.95); line-height: 1.8;">${text.replace(/\n/g, '<br>')}</p>`;
+                } else {
+                    resultDiv.innerHTML = '<p style="color: #ffaa00;">抱歉，AI 暂时开小差了，请稍后再试。</p>';
+                }
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = '<p style="color: #ffaa00;">网络连接似乎有些问题，请稍后再试。</p>';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '✨ 重新分析匹配度';
+                resultDiv.style.opacity = 1;
+            }
+        }
+    </script>
+</body>
+</html>

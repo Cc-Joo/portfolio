@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmoPiggy 艺术疗愈小程序 | 完整设计推导</title>
+    <style>
+        body, html {
+            margin: 0; 
+            padding: 0; 
+            background-color: #000000; 
+            text-align: center;
+        }
+        
+        /* 限制图片最大宽度，保证文字可读性，不会在带鱼屏上被拉得过大 */
+        .image-container {
+            max-width: 1200px; 
+            margin: 0 auto;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block; /* 消除图片下方的默认空隙 */
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 左上角悬浮的返回按钮 */
+        .back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #fff;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 99px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px); /* 悬浮时有一个向左微动的交互暗示 */
+        }
+
+        /* 手机端适配：按钮稍微变小并靠边 */
+        @media (max-width: 768px) {
+            .back-btn { 
+                top: 1rem; 
+                left: 1rem; 
+                padding: 0.6rem 1.2rem; 
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 返回首页的按钮 -->
+    <a href="index.html" class="back-btn">&larr; 返回</a>
+
+    <!-- 设计图无缝拼接展示区 -->
+    <div class="image-container">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_0.jpg?raw=true" alt="EmoPiggy Part 0">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_1.jpg?raw=true" alt="EmoPiggy Part 1">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_2.jpg?raw=true" alt="EmoPiggy Part 2">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_3.jpg?raw=true" alt="EmoPiggy Part 3">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_4.jpg?raw=true" alt="EmoPiggy Part 4">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_5.jpg?raw=true" alt="EmoPiggy Part 5">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_6.jpg?raw=true" alt="EmoPiggy Part 6">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_7.jpg?raw=true" alt="EmoPiggy Part 7">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_8.jpg?raw=true" alt="EmoPiggy Part 8">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_9.jpg?raw=true" alt="EmoPiggy Part 9">
+        <img src="https://github.com/Cc-Joo/portfolio/blob/main/Emopiggy_10.jpg?raw=true" alt="EmoPiggy Part 10">
+    </div>
+
+</body>
+</html>
