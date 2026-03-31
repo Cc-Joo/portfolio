@@ -222,6 +222,19 @@
         }
         .card-title { font-size: 2rem; margin-bottom: 0.5rem; }
 
+        /* --- 分析报告 --- */
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .report-card { 
+            display: flex; flex-direction: column; 
+            border-radius: 24px; overflow: hidden; text-decoration: none; color: inherit; 
+            transition: transform 0.3s ease, border-color 0.3s ease; 
+        }
+        .report-card:hover { transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.3); }
+        .report-image { width: 100%; aspect-ratio: 16 / 10; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .report-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); display: block; }
+        .report-card:hover .report-image img { transform: scale(1.05); }
+        .report-info { padding: 1.5rem; display: flex; flex-direction: column; flex: 1; background: rgba(255, 255, 255, 0.02); }
+
         /* 移动端响应式：屏幕较小时改为上图下文 */
         @media (max-width: 768px) {
             .portfolio-card { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
@@ -275,6 +288,7 @@
             <a href="#experience">前序</a>
             <a href="#journey">探索之旅</a>
             <a href="#portfolio">项目作品</a>
+            <a href="#reports">分析报告</a>
             <a href="#more">更多的我</a>
         </nav>
     </header>
@@ -314,7 +328,7 @@
     <section class="container reveal" id="experience">
         <div class="liquid-glass pill badge">Experience</div>
         <h2 class="section-title font-heading">前序</h2>
-        <p style="margin-bottom: 3rem;">4年互联网产品UX设计经验，覆盖C端产品与B端工具（公司内部工具），具备从0到1产品交互设计的能力，参与产品从需求分析、方案设计、研发协同、测试验收到上线的完整流程。</p>
+        <p style="margin-bottom: 3rem;">4年互联网产品UX设计经验，覆盖C端产品与B端工具（公司内部工具），具备从0到1产品交互设计的能力，参与产品从需求分析、方案设计、研发协同、测试验收到上线的完整流程，擅长调研分析与数据驱动。</p>
         
         <div class="timeline">
             <!-- 米哈游 -->
@@ -332,7 +346,7 @@
                 <div class="original-text">
                     <p class="bold-title">1.社交与社区产品</p>
                     <p>• 主导社区负面氛围治理项目「众裁」0-1交互设计：设计裁决者、举报者、被举报者和围观者不同用户的操作流程，最终提升用户归属感与治理透明度，提高社区氛围满意度，负面内容下降7.9%；</p>
-                    <p>• 主导探索型项目「大别野」0-1移动端和网页端交互设计：完成Avatar装扮系统及核心聊天模块流程设计，参与可用性测试优化后续方案；</p>
+                    <p>• 主导探索型项目「大别野」0-1移动端和网页端交互设计：负责Avatar装扮系统及核心IM聊天模块流程设计，参与可用性测试并优化后续方案，核心流程易用性提升显著，支撑项目顺利进入社区新模式验证阶段；</p>
                     <p>• 参与海外社区0-1搭建：注册登录、发布流程链路设计；</p>
                     <p class="bold-title">2.工具与平台类产品</p>
                     <p>• 主导游戏周边电商项目「米游铺」0-1交互设计；</p>
@@ -566,15 +580,47 @@
                     <img src="https://github.com/Cc-Joo/portfolio/blob/main/Groupchat_0.png?raw=true" alt="Groupchat 封面">
                 </div>
                 <div class="portfolio-info">
-                    <h3 class="card-title font-heading">大别野（IM群聊+Avatar）</h3>
+                    <h3 class="card-title font-heading">大别野（IM群聊+虚拟形象）</h3>
                     <div style="margin-bottom: 1rem;">
                         <span style="font-size: 0.85rem; padding: 0.2rem 0.8rem; border-radius: 99px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); white-space: nowrap;">2023年米哈游公司项目</span>
                     </div>
-                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">交互设计 / 社交互动 / Avatar</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">交互设计 / 社交互动 / Avatar虚拟形象</p>
                     <p>对于社区新模式的尝试，结合类discord式的三层群聊结构与Avatar互动，涉及移动端和网页端。</p>
                     <div style="margin-top: auto; padding-top: 1.5rem; color: #fff; font-weight: 500;">✨ 点击查看 &rarr;</div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- 分析报告 -->
+    <section class="container reveal" id="reports">
+        <div class="liquid-glass pill badge">Analysis</div>
+        <h2 class="section-title font-heading">分析报告</h2>
+        
+        <div class="report-grid">
+            <!-- 报告 1 -->
+            <a href="https://uawea3sfib.feishu.cn/docx/KU9rdv2IsozorKxTzQGcNqOunUd" target="_blank" class="report-card liquid-glass reveal">
+                <div class="report-image">
+                    <img src="https://github.com/Cc-Joo/portfolio/blob/main/psy1.png?raw=true" alt="分析报告 1">
+                </div>
+                <div class="report-info">
+                    <h3 class="font-heading" style="font-size: 1.3rem; margin-bottom: 0.8rem;">国内外心理赛道AI产品分析报告</h3>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 1.5rem;">从市场概览、产品分类分析、商业模式、挑战与机遇等多个角度分析国内外AI心理行业</p>
+                    <div style="margin-top: auto; color: #fff; font-weight: 500; font-size: 0.95rem;">✨ 前往阅读 &rarr;</div>
+                </div>
+            </a>
+
+            <!-- 报告 2 -->
+            <a href="https://uawea3sfib.feishu.cn/docx/LevSdBKRXo5x7Lx7zDvcPf0Rn0c" target="_blank" class="report-card liquid-glass reveal">
+                <div class="report-image">
+                    <img src="https://github.com/Cc-Joo/portfolio/blob/main/psy2.jpg?raw=true" alt="分析报告 2">
+                </div>
+                <div class="report-info">
+                    <h3 class="font-heading" style="font-size: 1.3rem; margin-bottom: 0.8rem;">国内AI心理公司全景图谱</h3>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 1.5rem;">系统梳理国内AI心理领域的头部公司和产品矩阵，罗列"硬件+软件+服务"的完整产业链</p>
+                    <div style="margin-top: auto; color: #fff; font-weight: 500; font-size: 0.95rem;">✨ 前往阅读 &rarr;</div>
+                </div>
+            </a>
         </div>
     </section>
 
@@ -601,7 +647,7 @@
                 <div class="more-card-content">
                     <h3 class="font-heading">身心探索实践</h3>
                     <p style="color: #fff; margin-bottom: 1rem; font-weight: 500;">疗愈师</p>
-                    <p>记录组织和带领疗愈活动的精彩瞬间，包括龙美术馆的音声疗愈会、艺术疗愈课堂、草坪疗愈会</p>
+                    <p>记录组织和带领疗愈活动的精彩瞬间，包括龙美术馆的音声疗愈会，艺术疗愈课堂助教，草坪疗愈会</p>
                 </div>
             </div>
         </div>
@@ -657,7 +703,7 @@
                     
                     <!-- 活动 1 -->
                     <div style="margin-bottom: 4rem;">
-                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #fff; font-weight: 500;">龙美术馆音声疗愈会带领者</h3>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #fff; font-weight: 500;">龙美术馆音声疗愈会</h3>
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
                             ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/long_1.jpeg?raw=true')}
                             ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/long_2.jpeg?raw=true')}
@@ -680,7 +726,7 @@
 
                     <!-- 活动 3 -->
                     <div>
-                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #fff; font-weight: 500;">草坪疗愈会组织者</h3>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid #fff; font-weight: 500;">草坪疗愈会</h3>
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
                             ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/soundhealing_1.jpeg?raw=true')}
                             ${createImg('https://github.com/Cc-Joo/portfolio/blob/main/soundhealing_2.jpeg?raw=true')}
